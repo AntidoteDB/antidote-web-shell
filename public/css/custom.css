@@ -10,4 +10,8 @@ body {
   height: 100%;
 }
 
+.logo {
+    width: auto;
+    height: 60px;
+}
 
