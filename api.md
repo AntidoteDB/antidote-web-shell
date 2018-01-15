@@ -1,8 +1,5 @@
 # Antidote web shell API
 
-POST /api/:rep_id/set              set_name
-    create a set
-
 GET /api/:rep_id/set/:set_id
     read a set
     
@@ -11,3 +8,9 @@ PUT /api/:rep_id/set/:set_id     value
     
 DELETE /api/:rep_id/set/:set_id     value
     remove an element from a set
+    
+    
+# Web shell commands
+
+set add <set_name> <value>
+set remove <set_name> <value>

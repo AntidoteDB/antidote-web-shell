@@ -1,3 +1,6 @@
+'use strict';
+
+var antidoteClient = require('antidote_ts_client');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -25,23 +28,15 @@ router.get('/', function(req, res, next) {
 app.use("/", router);
 
 /* API routing. */
+let antidote = antidoteClient.connect(8087, 'localhost');
 var apiRouter = express.Router();
-apiRouter.get('/', function(req, res, next) {
-    res.json({ message: 'hooray! welcome to our api!' });   
-});
-apiRouter.route('/:rep_id/set')
-    .post(function(req, res) {
-        var rep_id = req.params.rep_id;  
-        var set_id = req.body.set_id;  
-        console.log('Created', set_id, 'on replica', rep_id)
-        res.json({ message: 'Created '+ set_id + ' on replica ' + rep_id });
-    });
 apiRouter.route('/:rep_id/set/:set_id')
-    .get(function(req, res) {
+    .get(async function(req, res) {
         var rep_id = req.params.rep_id;  
         var set_id = req.params.set_id;  
         console.log('Get', set_id, 'from replica', rep_id)
-        res.json({ message: 'Get '+ set_id + ' from replica ' + rep_id });
+        var content = await antidote.set(set_id).read();
+        res.json({ message: 'Get '+ set_id + ' from replica ' + rep_id, cont: content  });
     })
     .put(function(req, res) {
         var rep_id = req.params.rep_id;  

@@ -15,3 +15,13 @@ body {
     height: 60px;
 }
 
+.partitioned {
+    border-left-width: 10px;
+    border-left-color: red;
+    border-left-style: solid;
+}
+
+#btn-group {
+    margin-top: 10px;
+    float: right;
+}
