@@ -36,21 +36,23 @@ apiRouter.route('/:rep_id/set/:set_id')
         var set_id = req.params.set_id;  
         console.log('Get', set_id, 'from replica', rep_id)
         var content = await antidote.set(set_id).read();
-        res.json({ message: 'Get '+ set_id + ' from replica ' + rep_id, cont: content  });
+        res.json({ message: 'Get '+ set_id + ' from replica ' + rep_id, status: 'OK', cont: content  });
     })
-    .put(function(req, res) {
+    .put(async function(req, res) {
         var rep_id = req.params.rep_id;  
         var set_id = req.params.set_id;  
         var value = req.body.value;
+        var content = await antidote.update(antidote.set(set_id).add(value));
         console.log('Add', value, 'to', set_id, 'on replica', rep_id)
-        res.json({ message: 'Add '+ value+ ' to '+ set_id+ ' on replica '+ rep_id });
+        res.json({ message: 'Add '+ value + ' to '+ set_id+ ' on replica '+ rep_id, status: 'OK' });
     })
-    .delete(function(req, res) {
+    .delete(async function(req, res) {
         var rep_id = req.params.rep_id;  
         var set_id = req.params.set_id; 
         var value = req.body.value; 
+        var content = await antidote.update(antidote.set(set_id).remove(value));
         console.log('Remove', value, 'from', set_id, 'on replica', rep_id)
-        res.json({ message: 'Remove '+ value+ ' from '+ set_id+ ' on replica '+ rep_id });
+        res.json({ message: 'Remove '+ value+ ' from '+ set_id+ ' on replica '+ rep_id, status: 'OK' });
     });
 
 app.use("/api", apiRouter);

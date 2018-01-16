@@ -1,11 +1,11 @@
 jQuery(function($, undefined) {
-    $('#term1').terminal(evalfun, {
+    $('#term1').terminal(evalAntidoteCmd, {
         greetings: 'Antidote replica 1.',
         height: 200,
         prompt: 'antidote1> '
     });
     
-    $('#term2').terminal(evalfun, {
+    $('#term2').terminal(evalAntidoteCmd, {
         greetings: 'Antidote replica 2.',
         height: 200,
         prompt: 'antidote2> '
@@ -41,38 +41,47 @@ function evalAntidoteCmd() {
     switch (args[0]) {
         case "set":
             switch (args[1]) {
-                case "add":
+                case "get":
                     var res = $.ajax({
                             url: '/api/1/set/' + args[2],
                             type: 'GET',
-                            async: false               
-                        }).responseText;
-                    this.echo(res);
+                            async: false,
+                            dataType: 'json'               
+                        }).responseJSON;
+                    this.echo(JSON.stringify(res.cont));
                     break;                
                 case "add":
                     var res = jQuery.ajax({
                             url: '/api/1/set/' + args[2],
                             type: 'PUT',
                             data: 'value='+ args[3],
-                            async: false               
-                        }).responseText;
-                    this.echo(res);
+                            async: false,
+                            dataType: 'json'               
+                        }).responseJSON;
+                    if (res.status === 'OK') 
+                        this.echo('OK');
+                    else
+                        this.echo('ERROR');
                     break;
                 case "remove":
                     var res = jQuery.ajax({
                             url: '/api/1/set/' + args[2],
                             type: 'DELETE',
                             data: 'value='+ args[3],
-                            async: false               
-                        }).responseText;
-                    this.echo(res);
+                            async: false,
+                            dataType: 'json'
+                        }).responseJSON;
+                    if (res.status === "OK")
+                        this.echo('OK');
+                    else
+                        this.echo('ERROR');                        
                     break;
                 default:
-                    alert("not supported op");
+                    this.echo("Not supported operation.");
             };
             break;
         default:
-            alert("not supported op")
+            alert("Not supported operation.")
     }
 
 
