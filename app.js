@@ -1,12 +1,15 @@
 'use strict';
 
 var antidoteClient = require('antidote_ts_client');
+const { spawn } = require('child_process');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
+spawn('docker-compose', ['-f', './docker/docker-antidote-3dcs.yml', 'up', '-d']);
 
 var app = express();
 
@@ -60,5 +63,20 @@ app.use("/api", apiRouter);
 app.use("*",function(req,res){
   res.sendFile(viewPath + "404.html");
 });
+
+process.stdin.resume();
+var ended = false;
+function exitHandler(options, err) {
+    if (!ended) {
+        console.log("Cleaning up before exit...");
+        spawn('docker-compose', ['-f', './docker/docker-antidote-3dcs.yml', 'down']);
+        ended = true;
+    }
+}
+//process.on('exit', exitHandler.bind(null,{cleanup:true}));
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+//process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+//process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+//process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
 module.exports = app;
