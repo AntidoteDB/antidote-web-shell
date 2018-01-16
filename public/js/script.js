@@ -80,8 +80,14 @@ function evalAntidoteCmd() {
                     this.echo("Not supported operation.");
             };
             break;
+        case "help":
+            this.echo(`Available commands:
+    set add <set_id> <value>
+    set remove <set_id> <value>
+    set get <set_id>`);
+            break;
         default:
-            alert("Not supported operation.")
+            this.echo("Not supported operation.")
     }
 
 
