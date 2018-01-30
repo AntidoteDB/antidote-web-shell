@@ -7,7 +7,7 @@ A simple, demonstrative web shell for [Antidote][antidote].
 Requirements: [node.js 8][nodejs], [npm][npm], [Antidote][antidote-setup].
 To compile it: `npm install`.  
 To run it for debug purposes: `DEBUG=antidote-web-shell:* npm start`.  
-(It currently assumes that an Antidote instance is reachable at `localhost:8087`).
+It uses the Antidote configuration specified in `config.js`.  
 
 
 ## Credits

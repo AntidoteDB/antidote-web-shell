@@ -1,21 +1,28 @@
-jQuery(function($, undefined) {
-    $('#term1').terminal(evalAntidoteCmd, {
-        greetings: 'Antidote replica 1.',
-        height: 200,
-        prompt: 'antidote1> '
-    });
-    
-    $('#term2').terminal(evalAntidoteCmd, {
-        greetings: 'Antidote replica 2.',
-        height: 200,
-        prompt: 'antidote2> '
-    });
-    
-    $('#term3').terminal(evalAntidoteCmd, {
-        greetings: 'Antidote replica 3.', 
-        height: 200,
-        prompt: 'antidote3> '
-     });
+const NUM_TERMS = 3;
+
+const OK_MSG = 'OK';
+const ERROR_MSG = 'ERROR';
+const UNKNOWN_MSG = 'command not found';
+
+const HELP_MSG = `
+set:
+    set add <set_id> <value>
+    set remove <set_id> <value>
+    set get <set_id>
+`;
+
+var terms = [];
+
+$(function() {
+    for (i=NUM_TERMS; i>=1; i--) {
+        terms.unshift(
+            $('#term' + i).terminal(window['evalAtdCmd' + i], {
+                greetings: false,
+                height: 350,
+                prompt: 'demo@antidote' + i +'> '
+            })
+        );
+    }
 
     $("#btn-partition").click(function() {
         if (!$("#term3").hasClass('partitioned')) {
@@ -32,78 +39,62 @@ jQuery(function($, undefined) {
     });
 });
 
+function evalAtdCmd1() {  evalAtdCmd(arguments[0], 0); }
+function evalAtdCmd2() {  evalAtdCmd(arguments[0], 1); }
+function evalAtdCmd3() {  evalAtdCmd(arguments[0], 2); }
 
-function evalAntidoteCmd() {
+function evalAtdCmd() {
 
     if (arguments == null || arguments[0] == "")
         return;
     var args = arguments[0].split(" ")
+    let tid = parseInt(arguments[1]);
     switch (args[0]) {
         case "set":
             switch (args[1]) {
                 case "get":
                     var res = $.ajax({
-                            url: '/api/1/set/' + args[2],
+                            url: '/api/' + tid + '/set/' + args[2],
                             type: 'GET',
                             async: false,
                             dataType: 'json'               
                         }).responseJSON;
-                    this.echo(JSON.stringify(res.cont));
+                    terms[tid].echo(JSON.stringify(res.cont));
                     break;                
                 case "add":
-                    var res = jQuery.ajax({
-                            url: '/api/1/set/' + args[2],
+                    var res = $.ajax({
+                            url: '/api/' + tid + '/set/' + args[2],
                             type: 'PUT',
-                            data: 'value='+ args[3],
+                            data: 'value=' + args[3],
                             async: false,
                             dataType: 'json'               
                         }).responseJSON;
                     if (res.status === 'OK') 
-                        this.echo('OK');
+                        terms[tid].echo(OK_MSG);
                     else
-                        this.echo('ERROR');
+                        terms[tid].echo(ERROR_MSG);
                     break;
                 case "remove":
-                    var res = jQuery.ajax({
-                            url: '/api/1/set/' + args[2],
+                    var res = $.ajax({
+                            url: '/api/' + tid + '/set/' + args[2],
                             type: 'DELETE',
-                            data: 'value='+ args[3],
+                            data: 'value=' + args[3],
                             async: false,
                             dataType: 'json'
                         }).responseJSON;
                     if (res.status === "OK")
-                        this.echo('OK');
+                        terms[tid].echo(OK_MSG);
                     else
-                        this.echo('ERROR');                        
+                        terms[tid].echo(ERROR_MSG);                        
                     break;
                 default:
-                    this.echo("Not supported operation.");
+                    terms[tid].echo(UNKNOWN_MSG);
             };
             break;
         case "help":
-            this.echo(`Available commands:
-    set add <set_id> <value>
-    set remove <set_id> <value>
-    set get <set_id>`);
+            terms[tid].echo(HELP_MSG);
             break;
         default:
-            this.echo("Not supported operation.")
-    }
-
-
-}
-
-function evalfun(command) {
-    if (command !== '') {
-        try {
-            var result = window.eval(command);
-            if (result !== undefined) {
-                this.echo(new String(result));
-            }
-        } catch(e) {
-            this.error(new String(e));
-        }
-    } else {
-        this.echo('');
+            terms[tid].echo(UNKNOWN_MSG)
     }
 }
