@@ -25,3 +25,9 @@ body {
     margin-top: 10px;
     float: right;
 }
+
+.terminal {
+    border-style: double;
+    border-color: whitesmoke;
+    border-width: thick;
+}

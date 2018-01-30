@@ -15,35 +15,35 @@ const CMDS = ['set', 'help', 'get', 'add', 'remove'];
 
 var terms = [];
 
-$(function() {
-    for (i=NUM_TERMS; i>=1; i--) {
+$(function () {
+    for (i = NUM_TERMS; i >= 1; i--) {
         terms.unshift(
             $('#term' + i).terminal(window['evalAtdCmd' + i], {
                 greetings: false,
                 height: 350,
-                prompt: 'demo@antidote' + i +'> ',
+                prompt: 'demo@antidote' + i + '> ',
                 tabcompletion: true,
                 completion: CMDS
             })
         );
     }
 
-    $("#btn-partition").click(function() {
-        if (!$("#term3").hasClass('partitioned')) {
-            $("#term3").addClass('partitioned');
+    $("#btn-partition").click(function () {
+        if (!$("#part").hasClass('partitioned')) {
+            $("#part").addClass('partitioned');
             $("#btn-partition").addClass('btn-success').removeClass('btn-danger');
             $("#btn-partition").html('Heal partition');
         } else {
-            $("#term3").removeClass('partitioned');
+            $("#part").removeClass('partitioned');
             $("#btn-partition").addClass('btn-danger').removeClass('btn-success');
             $("#btn-partition").html('Create partition');
         }
     });
 });
 
-function evalAtdCmd1() {  evalAtdCmd(arguments[0], 0); }
-function evalAtdCmd2() {  evalAtdCmd(arguments[0], 1); }
-function evalAtdCmd3() {  evalAtdCmd(arguments[0], 2); }
+function evalAtdCmd1() { evalAtdCmd(arguments[0], 0); }
+function evalAtdCmd2() { evalAtdCmd(arguments[0], 1); }
+function evalAtdCmd3() { evalAtdCmd(arguments[0], 2); }
 
 function evalAtdCmd() {
 
@@ -56,32 +56,32 @@ function evalAtdCmd() {
             switch (args[1]) {
                 case "get":
                     var res = $.ajax({
-                            url: '/api/' + tid + '/set/' + args[2],
-                            type: 'GET',
-                            async: false,
-                            dataType: 'json'               
-                        }).responseJSON;
+                        url: '/api/' + tid + '/set/' + args[2],
+                        type: 'GET',
+                        async: false,
+                        dataType: 'json'
+                    }).responseJSON;
                     terms[tid].echo(JSON.stringify(res.cont));
-                    break;                
+                    break;
                 case "add":
                     var res = $.ajax({
-                            url: '/api/' + tid + '/set/' + args[2],
-                            type: 'PUT',
-                            data: 'value=' + args[3],
-                            async: false,
-                            dataType: 'json'               
-                        }).responseJSON;
+                        url: '/api/' + tid + '/set/' + args[2],
+                        type: 'PUT',
+                        data: 'value=' + args[3],
+                        async: false,
+                        dataType: 'json'
+                    }).responseJSON;
                     terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
                     break;
                 case "remove":
                     var res = $.ajax({
-                            url: '/api/' + tid + '/set/' + args[2],
-                            type: 'DELETE',
-                            data: 'value=' + args[3],
-                            async: false,
-                            dataType: 'json'
-                        }).responseJSON;
-                    terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);                    
+                        url: '/api/' + tid + '/set/' + args[2],
+                        type: 'DELETE',
+                        data: 'value=' + args[3],
+                        async: false,
+                        dataType: 'json'
+                    }).responseJSON;
+                    terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
                     break;
                 default:
                     terms[tid].echo(UNKNOWN_MSG);
