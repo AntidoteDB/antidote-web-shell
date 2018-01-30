@@ -11,6 +11,8 @@ set:
     set get <set_id>
 `;
 
+const CMDS = ['set', 'help', 'get', 'add', 'remove'];
+
 var terms = [];
 
 $(function() {
@@ -19,7 +21,9 @@ $(function() {
             $('#term' + i).terminal(window['evalAtdCmd' + i], {
                 greetings: false,
                 height: 350,
-                prompt: 'demo@antidote' + i +'> '
+                prompt: 'demo@antidote' + i +'> ',
+                tabcompletion: true,
+                completion: CMDS
             })
         );
     }
@@ -27,13 +31,11 @@ $(function() {
     $("#btn-partition").click(function() {
         if (!$("#term3").hasClass('partitioned')) {
             $("#term3").addClass('partitioned');
-            $("#btn-partition").addClass('btn-primary');
-            $("#btn-partition").removeClass('btn-danger');
+            $("#btn-partition").addClass('btn-success').removeClass('btn-danger');
             $("#btn-partition").html('Heal partition');
         } else {
             $("#term3").removeClass('partitioned');
-            $("#btn-partition").addClass('btn-danger');
-            $("#btn-partition").removeClass('btn-primary');
+            $("#btn-partition").addClass('btn-danger').removeClass('btn-success');
             $("#btn-partition").html('Create partition');
         }
     });
@@ -69,10 +71,7 @@ function evalAtdCmd() {
                             async: false,
                             dataType: 'json'               
                         }).responseJSON;
-                    if (res.status === 'OK') 
-                        terms[tid].echo(OK_MSG);
-                    else
-                        terms[tid].echo(ERROR_MSG);
+                    terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
                     break;
                 case "remove":
                     var res = $.ajax({
@@ -82,10 +81,7 @@ function evalAtdCmd() {
                             async: false,
                             dataType: 'json'
                         }).responseJSON;
-                    if (res.status === "OK")
-                        terms[tid].echo(OK_MSG);
-                    else
-                        terms[tid].echo(ERROR_MSG);                        
+                    terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);                    
                     break;
                 default:
                     terms[tid].echo(UNKNOWN_MSG);
