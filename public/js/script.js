@@ -13,6 +13,17 @@ set:
 
 const CMDS = ['set', 'help', 'get', 'add', 'remove'];
 
+document.onkeydown = function (e) {
+    // Ctrl+[1,2,3] to switch between terminals
+    if (e.ctrlKey && e.which == 49) {
+        terms[0].focus();
+    } else if (e.ctrlKey && e.which == 50) {
+        terms[1].focus();
+    } else if (e.ctrlKey && e.which == 51) {
+        terms[2].focus();
+    }
+};
+
 var terms = [];
 
 $(function () {

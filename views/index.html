@@ -10,9 +10,14 @@
 
 <body>
     <div class="container">
-        <h1><a href="http://syncfree.github.io/antidote/"><img src="/img/antidote_logo.png" class="logo float-right"></a>AntidoteDB Web Shell</h1>
-        <p>Welcome to the AntidoteDB Web Shell! <br/> 
-        Type <em>help</em> to get the list of available commands. </p>
+        <h1>
+            <a href="http://syncfree.github.io/antidote/">
+                <img src="/img/antidote_logo.png" class="logo float-right">
+            </a>AntidoteDB Web Shell</h1>
+        <p>Welcome to the AntidoteDB Web Shell!
+            <br/> 
+            Type <mark>help</mark> to get the list of available commands. 
+            Use <mark>Ctrl+[1,2,3]</mark> to switch between terminals. </p>
         <div class="row">
             <div class="col-md-4">
                 <div id="term1"></div>
@@ -25,10 +30,10 @@
             </div>
         </div>
         <div class="btn-group" role="group" id="btn-group">
-            <button id="btn-partition" type="button" class="btn btn-danger">Create partition</button>
+            <button id="btn-partition" type="button" class="btn btn-danger" title="Toggle network partition on AntidoteDB's 3rd replica">Create partition</button>
         </div>
-    </div>  
-     
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.11.3/js/jquery.terminal.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
