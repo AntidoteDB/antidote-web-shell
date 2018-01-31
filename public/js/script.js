@@ -92,37 +92,39 @@ function evalAtdCmd() {
         return;
     var args = arguments[0].split(" ")
     let tid = parseInt(arguments[1]);
+    let okErrOutput = function (res) {
+        terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
+    }
     switch (args[0]) {
         case "set":
             switch (args[1]) {
                 case "get":
-                    var res = $.ajax({
+                    $.ajax({
                         url: '/api/' + tid + '/set/' + args[2],
                         type: 'GET',
-                        async: false,
-                        dataType: 'json'
-                    }).responseJSON;
-                    terms[tid].echo(JSON.stringify(res.cont));
+                        dataType: 'json',
+                        success: function (res) {
+                            terms[tid].echo(JSON.stringify(res.cont));
+                        }
+                    });
                     break;
                 case "add":
-                    var res = $.ajax({
+                    $.ajax({
                         url: '/api/' + tid + '/set/' + args[2],
                         type: 'PUT',
                         data: 'value=' + args[3],
-                        async: false,
-                        dataType: 'json'
-                    }).responseJSON;
-                    terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
+                        dataType: 'json',
+                        success: okErrOutput
+                    });
                     break;
                 case "remove":
-                    var res = $.ajax({
+                    $.ajax({
                         url: '/api/' + tid + '/set/' + args[2],
                         type: 'DELETE',
                         data: 'value=' + args[3],
-                        async: false,
-                        dataType: 'json'
-                    }).responseJSON;
-                    terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
+                        dataType: 'json',
+                        success: okErrOutput
+                    });
                     break;
                 default:
                     terms[tid].echo(UNKNOWN_MSG);

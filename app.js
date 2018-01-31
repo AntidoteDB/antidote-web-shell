@@ -44,28 +44,35 @@ for (var i in conf.antidote) {
 var apiRouter = express.Router();
 // Set API
 apiRouter.route('/:rep_id/set/:set_id')
-    .get(async function (req, res) {
+    .get(function (req, res) {
         let repId = parseInt(req.params.rep_id);
         var setId = req.params.set_id;
-        log('Get', setId, 'from replica', repId);
-        var content = await atdClis[repId].set(setId).read();
-        res.json({ status: 'OK', cont: content });
+        atdClis[repId].set(setId).read().then(content => {
+            log('Get', setId, 'from replica', repId);
+            res.json({ status: 'OK', cont: content });
+        });
     })
-    .put(async function (req, res) {
+    .put(function (req, res) {
         let repId = parseInt(req.params.rep_id);
         var setId = req.params.set_id;
         var value = req.body.value;
-        await atdClis[repId].update(atdClis[repId].set(setId).add(value));
-        log('Add', value, 'to', setId, 'on replica', repId)
-        res.json({ status: 'OK' });
+        atdClis[repId].update(
+            atdClis[repId].set(setId).add(value)
+        ).then(resp => {
+            log('Add', value, 'to', setId, 'on replica', repId)
+            res.json({ status: 'OK' });
+        });
     })
-    .delete(async function (req, res) {
+    .delete(function (req, res) {
         let repId = parseInt(req.params.rep_id);
         var setId = req.params.set_id;
         var value = req.body.value;
-        await atdClis[repId].update(atdClis[repId].set(setId).remove(value));
-        log('Remove', value, 'from', setId, 'on replica', repId)
-        res.json({ status: 'OK' });
+        atdClis[repId].update(
+            atdClis[repId].set(setId).remove(value)
+        ).then(resp => {
+            log('Remove', value, 'from', setId, 'on replica', repId)
+            res.json({ status: 'OK' });
+        });
     });
 // Network partition API
 apiRouter.route('/:rep_id/part')
