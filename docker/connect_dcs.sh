@@ -21,4 +21,4 @@ EOF
 
 escript /tmp/connect.erl
 touch /tmp/ready
-while true; do sleep 20; done
+#while true; do sleep 20; done

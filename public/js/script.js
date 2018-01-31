@@ -5,7 +5,7 @@ const ERROR_MSG = 'ERROR';
 const UNKNOWN_MSG = 'command not found';
 
 const HELP_MSG = `
-set:
+add-wins set:
     set add <set_id> <value>
     set remove <set_id> <value>
     set get <set_id>
@@ -41,16 +41,46 @@ $(function () {
 
     $("#btn-partition").click(function () {
         if (!$("#part").hasClass('partitioned')) {
-            $("#part").addClass('partitioned');
-            $("#btn-partition").addClass('btn-success').removeClass('btn-danger');
-            $("#btn-partition").html('Heal partition');
+            $.ajax({
+                url: '/api/3/part',
+                type: 'PUT',
+                success: function (result) {
+                    setPartitionGui();
+                }
+            });
         } else {
-            $("#part").removeClass('partitioned');
-            $("#btn-partition").addClass('btn-danger').removeClass('btn-success');
-            $("#btn-partition").html('Create partition');
+            $.ajax({
+                url: '/api/3/part',
+                type: 'DELETE',
+                success: function (result) {
+                    unsetPartitionGui();
+                }
+            });
+        }
+    });
+
+    $.getJSON('/api/3/part', function (data) {
+        switch (data.status) {
+            case 'ON':
+                unsetPartitionGui();
+                break;
+            case 'OFF':
+                setPartitionGui();
+                break;
         }
     });
 });
+
+function setPartitionGui() {
+    $("#part").addClass('partitioned');
+    $("#btn-partition").addClass('btn-success').removeClass('btn-danger');
+    $("#btn-partition").html('Heal partition');
+}
+function unsetPartitionGui() {
+    $("#part").removeClass('partitioned');
+    $("#btn-partition").addClass('btn-danger').removeClass('btn-success');
+    $("#btn-partition").html('Create partition');
+}
 
 function evalAtdCmd1() { evalAtdCmd(arguments[0], 0); }
 function evalAtdCmd2() { evalAtdCmd(arguments[0], 1); }

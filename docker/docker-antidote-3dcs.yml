@@ -3,7 +3,7 @@ services:
   antidote1:
     image: antidotedb/antidote:latest
     ports:
-     - "8087:8087"
+     - "127.0.0.1:8087:8087"
     environment:
       NODE_NAME: "antidote@antidote1"
       SHORT_NAME: "true"
@@ -11,7 +11,7 @@ services:
   antidote2:
     image: antidotedb/antidote:latest
     ports:
-     - "8088:8087"
+     - "127.0.0.1:8088:8087"
     environment:
       NODE_NAME: "antidote@antidote2"
       SHORT_NAME: "true"
@@ -19,13 +19,13 @@ services:
   antidote3:
     image: antidotedb/antidote:latest
     ports:
-     - "8089:8087"
+     - "127.0.0.1:8089:8087"
     environment:
       NODE_NAME: "antidote@antidote3"
       SHORT_NAME: "true"
 
   link:
-    image: erlang:19
+    image: erlang:19-slim
     healthcheck:
       test: ["CMD", "test", "-f", "/tmp/ready"]
       interval: 3s
