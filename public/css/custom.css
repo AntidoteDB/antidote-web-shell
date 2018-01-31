@@ -31,3 +31,7 @@ body {
     border-color: whitesmoke;
     border-width: thick;
 }
+
+.container {
+    max-width: 80%;
+}
