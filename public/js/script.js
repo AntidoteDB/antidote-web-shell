@@ -4,6 +4,8 @@ const OK_MSG = 'OK';
 const ERROR_MSG = 'ERROR';
 const UNKNOWN_MSG = 'command not found';
 
+const POLLING_INTERVAL = 10000;
+
 const HELP_MSG = `
 add-wins set:
     set add <set_id> <value>
@@ -64,19 +66,22 @@ $(function () {
                 });
             }
         });
-
-        // Get current partitioning state
-        $.getJSON('/api/' + i + '/part', function (data) {
-            switch (data.status) {
-                case 'ON':
-                    unsetPartitionGui(data.rep);
-                    break;
-                case 'OFF':
-                    setPartitionGui(data.rep);
-                    break;
-            }
-        });
     }
+
+    // Get current partitioning state
+    function doPoll() {
+        for (let i = 1; i <= NUM_TERMS; i++) {
+            $.getJSON('/api/' + i + '/part', function (data) {
+                if (data.status === 'ON') {
+                    unsetPartitionGui(data.rep);
+                } else if (data.status === 'OFF') {
+                    setPartitionGui(data.rep);
+                }
+            });
+        }
+        setTimeout(doPoll, POLLING_INTERVAL);
+    }
+    doPoll();
 });
 
 function setPartitionGui(i) {
