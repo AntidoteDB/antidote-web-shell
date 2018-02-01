@@ -4,16 +4,22 @@ const OK_MSG = 'OK';
 const ERROR_MSG = 'ERROR';
 const UNKNOWN_MSG = 'command not found';
 
-const POLLING_INTERVAL = 10000;
+const POLLING_INTERVAL = -1; // -1 == OFF
 
 const HELP_MSG = `
 add-wins set:
     set add <set_id> <value>
     set remove <set_id> <value>
     set get <set_id>
+
+counter:
+    count inc <counter_id>
+    count dec <counter_id>
+    count get <counter_id>
 `;
 
-const CMDS = ['set', 'help', 'get', 'add', 'remove'];
+const CMDS = ['set', 'help', 'get', 'add',
+    'remove', 'count', 'inc', 'dec'];
 
 document.onkeydown = function (e) {
     // Ctrl+[1,2,..,9] to switch between terminals
@@ -79,7 +85,8 @@ $(function () {
                 }
             });
         }
-        setTimeout(doPoll, POLLING_INTERVAL);
+        if (POLLING_INTERVAL > 0)
+            setTimeout(doPoll, POLLING_INTERVAL);
     }
     doPoll();
 });
@@ -104,10 +111,11 @@ function evalAtdCmd(cmd, term) {
     }
     switch (args[0]) {
         case "set":
+            //case "count":
             switch (args[1]) {
                 case "get":
                     $.ajax({
-                        url: '/api/' + tid + '/set/' + args[2],
+                        url: '/api/' + (tid + 1) + '/set/' + args[2],
                         type: 'GET',
                         dataType: 'json',
                         success: function (res) {
@@ -117,7 +125,7 @@ function evalAtdCmd(cmd, term) {
                     break;
                 case "add":
                     $.ajax({
-                        url: '/api/' + tid + '/set/' + args[2],
+                        url: '/api/' + (tid + 1) + '/set/' + args[2],
                         type: 'PUT',
                         data: 'value=' + args[3],
                         dataType: 'json',
@@ -126,9 +134,41 @@ function evalAtdCmd(cmd, term) {
                     break;
                 case "remove":
                     $.ajax({
-                        url: '/api/' + tid + '/set/' + args[2],
+                        url: '/api/' + (tid + 1) + '/set/' + args[2],
                         type: 'DELETE',
                         data: 'value=' + args[3],
+                        dataType: 'json',
+                        success: okErrOutput
+                    });
+                    break;
+                default:
+                    terms[tid].echo(UNKNOWN_MSG);
+            };
+            break;
+        case "count":
+            switch (args[1]) {
+                case "get":
+                    $.ajax({
+                        url: '/api/' + (tid + 1) + '/count/' + args[2],
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (res) {
+                            terms[tid].echo(JSON.stringify(res.cont));
+                        }
+                    });
+                    break;
+                case "inc":
+                    $.ajax({
+                        url: '/api/' + (tid + 1) + '/count/' + args[2],
+                        type: 'PUT',
+                        dataType: 'json',
+                        success: okErrOutput
+                    });
+                    break;
+                case "dec":
+                    $.ajax({
+                        url: '/api/' + (tid + 1) + '/count/' + args[2],
+                        type: 'DELETE',
                         dataType: 'json',
                         success: okErrOutput
                     });

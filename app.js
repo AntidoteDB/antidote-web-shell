@@ -57,7 +57,7 @@ apiRouter.route('/:rep_id/set/:set_id')
     .get(function (req, res) {
         let repId = parseInt(req.params.rep_id);
         var setId = req.params.set_id;
-        atdClis[repId].set(setId).read().then(content => {
+        atdClis[repId-1].set(setId).read().then(content => {
             log('Get', setId, 'from replica', repId);
             res.json({ status: 'OK', cont: content });
         });
@@ -66,8 +66,8 @@ apiRouter.route('/:rep_id/set/:set_id')
         let repId = parseInt(req.params.rep_id);
         var setId = req.params.set_id;
         var value = req.body.value;
-        atdClis[repId].update(
-            atdClis[repId].set(setId).add(value)
+        atdClis[repId-1].update(
+            atdClis[repId-1].set(setId).add(value)
         ).then(resp => {
             log('Add', value, 'to', setId, 'on replica', repId)
             res.json({ status: 'OK' });
@@ -77,10 +77,41 @@ apiRouter.route('/:rep_id/set/:set_id')
         let repId = parseInt(req.params.rep_id);
         var setId = req.params.set_id;
         var value = req.body.value;
-        atdClis[repId].update(
-            atdClis[repId].set(setId).remove(value)
+        atdClis[repId-1].update(
+            atdClis[repId-1].set(setId).remove(value)
         ).then(resp => {
             log('Remove', value, 'from', setId, 'on replica', repId)
+            res.json({ status: 'OK' });
+        });
+    });
+
+// Counter API
+apiRouter.route('/:rep_id/count/:counter_id')
+    .get(function (req, res) {
+        let repId = parseInt(req.params.rep_id);
+        var counterId = req.params.counter_id;
+        atdClis[repId-1].counter(counterId).read().then(content => {
+            log('Get', counterId, 'from replica', repId);
+            res.json({ status: 'OK', cont: content });
+        });
+    })
+    .put(function (req, res) {
+        let repId = parseInt(req.params.rep_id);
+        var counterId = req.params.counter_id;
+        atdClis[repId-1].update(
+            atdClis[repId-1].counter(counterId).increment(1)
+        ).then(resp => {
+            log('Increment', counterId, 'on replica', repId)
+            res.json({ status: 'OK' });
+        });
+    })
+    .delete(function (req, res) {
+        let repId = parseInt(req.params.rep_id);
+        var counterId = req.params.counter_id;
+        atdClis[repId-1].update(
+            atdClis[repId-1].counter(counterId).increment(-1)
+        ).then(resp => {
+            log('Decrement', counterId, 'on replica', repId)
             res.json({ status: 'OK' });
         });
     });
