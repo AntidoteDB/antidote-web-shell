@@ -15,7 +15,7 @@ const CMDS = ['set', 'help', 'get', 'add', 'remove'];
 
 document.onkeydown = function (e) {
     // Ctrl+[1,2,3] to switch between terminals
-    if (e.ctrlKey && e.which == 49) {
+    if (e.ctrlKey && e.which <= 49) {
         terms[0].focus();
     } else if (e.ctrlKey && e.which == 50) {
         terms[1].focus();
@@ -28,6 +28,7 @@ var terms = [];
 
 $(function () {
     for (i = NUM_TERMS; i >= 1; i--) {
+        // Initialize terminals
         terms.unshift(
             $('#term' + i).terminal(window['evalAtdCmd' + i], {
                 greetings: false,
@@ -37,49 +38,58 @@ $(function () {
                 completion: CMDS
             })
         );
+    }   
+
+    for (let i = NUM_TERMS; i >= 1; i--) { 
+        // NB: use of let for block scoping 
+        // see https://stackoverflow.com/a/750506
+
+        // Set partitioning button logic
+        $('#btn-part' + i).click(function() {
+            if (!$('#part' + i).hasClass('partitioned')) {
+                $.ajax({
+                    url: '/api/' + i + '/part',
+                    type: 'PUT',
+                    dataType: 'json',
+                    success: function (data) {
+                        setPartitionGui(data.rep);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/api/' + i + '/part',
+                    type: 'DELETE',
+                    dataType: 'json',
+                    success: function (data) {
+                        unsetPartitionGui(data.rep);
+                    }
+                });
+            }
+        });
+
+        // Get current partitioning state
+        $.getJSON('/api/' + i + '/part', function (data) {
+            switch (data.status) {
+                case 'ON':
+                    unsetPartitionGui(data.rep);
+                    break;
+                case 'OFF':
+                    setPartitionGui(data.rep);
+                    break;
+            }
+        });
     }
-
-    $("#btn-partition").click(function () {
-        if (!$("#part").hasClass('partitioned')) {
-            $.ajax({
-                url: '/api/3/part',
-                type: 'PUT',
-                success: function (result) {
-                    setPartitionGui();
-                }
-            });
-        } else {
-            $.ajax({
-                url: '/api/3/part',
-                type: 'DELETE',
-                success: function (result) {
-                    unsetPartitionGui();
-                }
-            });
-        }
-    });
-
-    $.getJSON('/api/3/part', function (data) {
-        switch (data.status) {
-            case 'ON':
-                unsetPartitionGui();
-                break;
-            case 'OFF':
-                setPartitionGui();
-                break;
-        }
-    });
 });
 
-function setPartitionGui() {
-    $("#part").addClass('partitioned');
-    $("#btn-partition").addClass('btn-success').removeClass('btn-danger');
-    $("#btn-partition").html('Heal partition');
+function setPartitionGui(i) {
+    $("#part" + i).addClass('partitioned');
+    $("#btn-part" + i).addClass('btn-success').removeClass('btn-danger');
+    $("#btn-part" + i).html('Heal partition');
 }
-function unsetPartitionGui() {
-    $("#part").removeClass('partitioned');
-    $("#btn-partition").addClass('btn-danger').removeClass('btn-success');
-    $("#btn-partition").html('Create partition');
+function unsetPartitionGui(i) {
+    $("#part" + i).removeClass('partitioned');
+    $("#btn-part" + i).addClass('btn-danger').removeClass('btn-success');
+    $("#btn-part" + i).html('Create partition');
 }
 
 function evalAtdCmd1() { evalAtdCmd(arguments[0], 0); }

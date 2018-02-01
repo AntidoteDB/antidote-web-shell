@@ -29,6 +29,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const viewPath = __dirname + '/views/';
 
+// Cache of partition info
+// XXX change this if the web server is replicated
+var partitionInfo = new Map();
+for (i=1; i<=conf.antidote.length; i++){
+    partitionInfo.set(i, true);
+}
+
+// Initialize Antidote clients
+var atdClis = [];
+for (var i in conf.antidote) {
+    atdClis.push(antidote.connect(conf.antidote[i].port, conf.antidote[i].host));
+}
+
 /* Static web page routing. */
 var staticRouter = express.Router();
 staticRouter.get('/', function (req, res, next) {
@@ -37,11 +50,8 @@ staticRouter.get('/', function (req, res, next) {
 app.use("/", staticRouter);
 
 /* API routing. */
-var atdClis = [];
-for (var i in conf.antidote) {
-    atdClis.push(antidote.connect(conf.antidote[i].port, conf.antidote[i].host));
-}
 var apiRouter = express.Router();
+
 // Set API
 apiRouter.route('/:rep_id/set/:set_id')
     .get(function (req, res) {
@@ -74,37 +84,47 @@ apiRouter.route('/:rep_id/set/:set_id')
             res.json({ status: 'OK' });
         });
     });
+
 // Network partition API
 apiRouter.route('/:rep_id/part')
     .get(function (req, res) {
         let repId = parseInt(req.params.rep_id);
-        spawn('./net_part.sh', ['ispart'])
-            .on('exit', function (code) {
-                var value = code == 1 ? 'ON' : 'OFF';
-                log('Get partition info of replica', repId, code, value);
-                res.json({ status: value });
-            });
+        var value = partitionInfo.get(repId) ? 'ON' : 'OFF';
+        res.json({ status: value, rep: repId });
     })
     .put(function (req, res) {
         let repId = parseInt(req.params.rep_id);
-        spawn('./net_part.sh', ['create'])
-            .on('exit', function (code) {
-                if (code == 0) {
-                    log('Partition replica', repId)
-                    res.json({ status: 'OK' });
-                }
+        if (!partitionInfo.get(repId)) {
+            log('Partition replica', repId, 'already set');
+            res.json({ status: 'OK', rep: repId });
+        } else {
+            spawn(conf.partitionCmd, ['create', repId])
+                .on('exit', function (code) {
+                    if (code == 0) {
+                        log('Partition replica', repId);
+                        partitionInfo.set(repId, false);
+                        res.json({ status: 'OK', rep: repId });
+                    }
             });
+        }
     })
     .delete(function (req, res) {
         let repId = parseInt(req.params.rep_id);
-        spawn('./net_part.sh', ['remove'])
-            .on('exit', function (code) {
-                if (code == 0) {
-                    log('Remove partition over replica', repId)
-                    res.json({ status: 'OK' });
-                }
+        if (partitionInfo.get(repId)) {
+            log('Partition replica', repId, 'already removed');
+            res.json({ status: 'OK', rep: repId });
+        } else {
+            spawn(conf.partitionCmd, ['remove', repId])
+                .on('exit', function (code) {
+                    if (code == 0) {
+                        log('Remove partition over replica', repId);
+                        partitionInfo.set(repId, true);
+                        res.json({ status: 'OK', rep: repId });
+                    }
             });
+        }
     });
+
 app.use("/api", apiRouter);
 
 /* Default routing. */

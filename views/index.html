@@ -19,19 +19,39 @@
             Type <mark>help</mark> to get the list of available commands. 
             Use <mark>Ctrl+[1,2,3]</mark> to switch between terminals. </p>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4" id="part1">
                 <div id="term1"></div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" id="part2">
                 <div id="term2"></div>
             </div>
-            <div class="col-md-4" id="part">
+            <div class="col-md-4" id="part3">
                 <div id="term3"></div>
             </div>
         </div>
-        <div class="btn-group" role="group" id="btn-group">
-            <button id="btn-partition" type="button" class="btn btn-danger" title="Toggle network partition on AntidoteDB's 3rd replica">Create partition</button>
-        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="btn-group" role="group" id="btn-group">
+                    <button id="btn-part1" type="button" class="btn btn-danger" 
+                    title="Toggle network partition on AntidoteDB's 1st replica">
+                    Create partition</button>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="btn-group" role="group" id="btn-group">
+                    <button id="btn-part2" type="button" class="btn btn-danger" 
+                    title="Toggle network partition on AntidoteDB's 2nd replica">
+                    Create partition</button>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="btn-group" role="group" id="btn-group">
+                    <button id="btn-part3" type="button" class="btn btn-danger" 
+                    title="Toggle network partition on AntidoteDB's 3rd replica">
+                    Create partition</button>
+                </div>
+            </div>
+        </div>       
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
