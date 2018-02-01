@@ -32,7 +32,7 @@ const viewPath = __dirname + '/views/';
 // Cache of partition info
 // XXX change this if the web server is replicated
 var partitionInfo = new Map();
-for (i=1; i<=conf.antidote.length; i++){
+for (i = 1; i <= conf.antidote.length; i++) {
     partitionInfo.set(i, true);
 }
 
@@ -105,7 +105,7 @@ apiRouter.route('/:rep_id/part')
                         partitionInfo.set(repId, false);
                         res.json({ status: 'OK', rep: repId });
                     }
-            });
+                });
         }
     })
     .delete(function (req, res) {
@@ -121,7 +121,7 @@ apiRouter.route('/:rep_id/part')
                         partitionInfo.set(repId, true);
                         res.json({ status: 'OK', rep: repId });
                     }
-            });
+                });
         }
     });
 

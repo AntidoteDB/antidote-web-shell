@@ -14,38 +14,36 @@ add-wins set:
 const CMDS = ['set', 'help', 'get', 'add', 'remove'];
 
 document.onkeydown = function (e) {
-    // Ctrl+[1,2,3] to switch between terminals
-    if (e.ctrlKey && e.which <= 49) {
-        terms[0].focus();
-    } else if (e.ctrlKey && e.which == 50) {
-        terms[1].focus();
-    } else if (e.ctrlKey && e.which == 51) {
-        terms[2].focus();
+    // Ctrl+[1,2,..,9] to switch between terminals
+    if (e.ctrlKey && (e.which >= 49 && e.which <= 57)) {
+        terms[e.which - 49].focus();
     }
 };
 
 var terms = [];
 
 $(function () {
-    for (i = NUM_TERMS; i >= 1; i--) {
+    for (i = 1; i <= NUM_TERMS; i++) {
         // Initialize terminals
-        terms.unshift(
-            $('#term' + i).terminal(window['evalAtdCmd' + i], {
+        terms.push(
+            $('#term' + i).terminal(evalAtdCmd, {
                 greetings: false,
                 height: 350,
                 prompt: 'demo@antidote' + i + '> ',
                 tabcompletion: true,
-                completion: CMDS
+                completion: CMDS,
+                name: i
             })
         );
-    }   
+    }
+    terms[0].focus();
 
-    for (let i = NUM_TERMS; i >= 1; i--) { 
+    for (let i = 1; i <= NUM_TERMS; i++) {
         // NB: use of let for block scoping 
         // see https://stackoverflow.com/a/750506
 
         // Set partitioning button logic
-        $('#btn-part' + i).click(function() {
+        $('#btn-part' + i).click(function () {
             if (!$('#part' + i).hasClass('partitioned')) {
                 $.ajax({
                     url: '/api/' + i + '/part',
@@ -92,16 +90,10 @@ function unsetPartitionGui(i) {
     $("#btn-part" + i).html('Create partition');
 }
 
-function evalAtdCmd1() { evalAtdCmd(arguments[0], 0); }
-function evalAtdCmd2() { evalAtdCmd(arguments[0], 1); }
-function evalAtdCmd3() { evalAtdCmd(arguments[0], 2); }
-
-function evalAtdCmd() {
-
-    if (arguments == null || arguments[0] == "")
-        return;
-    var args = arguments[0].split(" ")
-    let tid = parseInt(arguments[1]);
+function evalAtdCmd(cmd, term) {
+    if (cmd == null || cmd == "") return;
+    var args = cmd.split(" ")
+    let tid = parseInt(term.name()) - 1;
     let okErrOutput = function (res) {
         terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
     }
