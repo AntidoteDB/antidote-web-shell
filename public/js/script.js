@@ -111,11 +111,11 @@ function evalAtdCmd(cmd, term) {
     }
     switch (args[0]) {
         case "set":
-            //case "count":
+        case "count":
             switch (args[1]) {
                 case "get":
                     $.ajax({
-                        url: '/api/' + (tid + 1) + '/set/' + args[2],
+                        url: '/api/' + (tid + 1) + '/' + args[0] + '/' + args[2],
                         type: 'GET',
                         dataType: 'json',
                         success: function (res) {
@@ -124,51 +124,21 @@ function evalAtdCmd(cmd, term) {
                     });
                     break;
                 case "add":
+                case "inc":
                     $.ajax({
-                        url: '/api/' + (tid + 1) + '/set/' + args[2],
+                        url: '/api/' + (tid + 1) + '/' + args[0] + '/' + args[2],
                         type: 'PUT',
-                        data: 'value=' + args[3],
+                        data: 'value=' + (args.length > 3 ? args[3] : ''),
                         dataType: 'json',
                         success: okErrOutput
                     });
                     break;
                 case "remove":
-                    $.ajax({
-                        url: '/api/' + (tid + 1) + '/set/' + args[2],
-                        type: 'DELETE',
-                        data: 'value=' + args[3],
-                        dataType: 'json',
-                        success: okErrOutput
-                    });
-                    break;
-                default:
-                    terms[tid].echo(UNKNOWN_MSG);
-            };
-            break;
-        case "count":
-            switch (args[1]) {
-                case "get":
-                    $.ajax({
-                        url: '/api/' + (tid + 1) + '/count/' + args[2],
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function (res) {
-                            terms[tid].echo(JSON.stringify(res.cont));
-                        }
-                    });
-                    break;
-                case "inc":
-                    $.ajax({
-                        url: '/api/' + (tid + 1) + '/count/' + args[2],
-                        type: 'PUT',
-                        dataType: 'json',
-                        success: okErrOutput
-                    });
-                    break;
                 case "dec":
                     $.ajax({
-                        url: '/api/' + (tid + 1) + '/count/' + args[2],
+                        url: '/api/' + (tid + 1) + '/' + args[0] + '/' + args[2],
                         type: 'DELETE',
+                        data: 'value=' + (args.length > 3 ? args[3] : ''),
                         dataType: 'json',
                         success: okErrOutput
                     });
