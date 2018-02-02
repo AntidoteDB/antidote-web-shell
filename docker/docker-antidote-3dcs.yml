@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   antidote1:
-    image: antidotedb/antidote:latest
+    image: pviotti/antidote-alpine:iptables
     ports:
      - "127.0.0.1:8087:8087"
     environment:
@@ -9,7 +9,7 @@ services:
       SHORT_NAME: "true"
 
   antidote2:
-    image: antidotedb/antidote:latest
+    image: pviotti/antidote-alpine:iptables
     ports:
      - "127.0.0.1:8088:8087"
     environment:
@@ -17,7 +17,7 @@ services:
       SHORT_NAME: "true"
       
   antidote3:
-    image: antidotedb/antidote:latest
+    image: pviotti/antidote-alpine:iptables
     ports:
      - "127.0.0.1:8089:8087"
     environment:
