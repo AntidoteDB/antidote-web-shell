@@ -5,11 +5,13 @@ A demonstrative web shell for [Antidote][antidote].
 ## Getting started
 
 Requirements: [node.js 8][nodejs], [npm][npm], [Antidote][antidote-setup].  
-To compile it: `npm install`.  
-To start a test environment deployment of AntidoteDB: `docker-compose -f docker/docker-antidote-3dcs.yml up`.  
-To run it for debugging purposes: `DEBUG=antidote-web-shell:* npm start`.  
-It uses the AntidoteDB configuration specified in `config.js`.  
+To build it: `make` (or `npm install`).  
+To run it with a local cluster of Docker containers: `make run`.  
 
+To start a local Docker deployment of AntidoteDB: `docker-compose -f docker/docker-antidote-3dcs.yml up`.  
+To run the web server (which will listen on `localhost:3000`): `DEBUG=antidote-web-shell:* npm start`.  
+
+It uses the AntidoteDB configuration specified in `config.js`.  
 
 ## Credits
 
