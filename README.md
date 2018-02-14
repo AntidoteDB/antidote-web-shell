@@ -1,6 +1,6 @@
 # AntidoteDB Web Shell
 
-A demonstrative web shell for [Antidote][antidote].   
+A demonstrative web shell for [AntidoteDB][antidote].   
 
 ## Getting started
 
