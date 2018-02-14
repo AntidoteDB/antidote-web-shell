@@ -8,9 +8,11 @@
   "dependencies": {
     "antidote_ts_client": "^0.1.7",
     "body-parser": "~1.18.2",
+    "compression": "^1.7.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "helmet": "^3.11.0",
     "morgan": "~1.9.0",
     "pug": "2.0.0-beta11",
     "serve-favicon": "~2.4.5"

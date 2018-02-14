@@ -8,6 +8,8 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { spawn } = require('child_process');
+const compression = require('compression');
+const helmet = require('helmet');
 
 const conf = require('./config');
 
@@ -20,6 +22,8 @@ function log(...args) {
 
 const app = express();
 
+app.use(helmet());
+app.use(compression()); // Compress all routes
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
