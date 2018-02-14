@@ -4,7 +4,7 @@ const OK_MSG = 'OK';
 const ERROR_MSG = 'ERROR';
 const UNKNOWN_MSG = 'command not found';
 
-const POLLING_INTERVAL = -1; // -1 == OFF
+const POLLING_INTERVAL = 5000; // -1 == OFF
 
 const HELP_MSG = `
 add-wins set:
