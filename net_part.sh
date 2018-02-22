@@ -9,11 +9,11 @@ ispart)
     docker-compose -f $DOCKER_FILE exec --privileged $REPLICA_NAME$2 bash -c 'iptables -L -n -v' | grep DROP
     ;;
 create)
-    docker-compose -f -d $DOCKER_FILE exec --privileged $REPLICA_NAME$2 bash -c \
+    docker-compose -f $DOCKER_FILE exec -d --privileged $REPLICA_NAME$2 bash -c \
         'iptables -A INPUT -p tcp --dport 8086 -j DROP; iptables -A OUTPUT -p tcp --dport 8086 -j DROP'
     ;;
 remove)
-    docker-compose -f -d $DOCKER_FILE exec --privileged $REPLICA_NAME$2 bash -c \
+    docker-compose -f $DOCKER_FILE exec -d --privileged $REPLICA_NAME$2 bash -c \
         'iptables -D INPUT -p tcp --dport 8086 -j DROP; iptables -D OUTPUT -p tcp --dport 8086 -j DROP'
     ;;
 *)
