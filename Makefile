@@ -8,7 +8,7 @@ run: start-docker start-server
 start-server:
 	npm start
 
-start-server-test-deploy:
+start-server-testenv:
 	PORT=3000 NODE_ENV=production npm start > webshell.log 2>&1
 
 start-docker:

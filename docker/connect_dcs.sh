@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 5
+sleep 20
 
 cat > /tmp/connect.erl <<- EOF 
 #!/usr/bin/env escript
