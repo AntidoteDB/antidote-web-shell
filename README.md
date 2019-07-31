@@ -17,10 +17,10 @@ It uses the AntidoteDB configuration specified in `config.js`.
 
 [RainbowFS][rainbowfs] and [LightKone][lightkone] research projects.
 
- [antidote]: http://syncfree.github.io/antidote/
+ [antidote]: https://www.antidotedb.eu/
  [rainbowfs]: http://rainbowfs.lip6.fr/
  [lightkone]: https://www.lightkone.eu/
  [nodejs]: https://nodejs.org/
  [npm]: https://www.npmjs.com/
- [antidote-setup]: http://syncfree.github.io/antidote/setup.html
+ [antidote-setup]: https://antidotedb.gitbook.io/documentation/overview/installation
 
