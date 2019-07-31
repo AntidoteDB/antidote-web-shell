@@ -104,11 +104,11 @@ function unsetPartitionGui(i) {
 
 function evalAtdCmd(cmd, term) {
     if (cmd == null || cmd == "") return;
-    var args = cmd.split(" ")
+    var args = cmd.split(" ");
     let tid = parseInt(term.name()) - 1;
     let okErrOutput = function (res) {
         terms[tid].echo(res.status === 'OK' ? OK_MSG : ERROR_MSG);
-    }
+    };
     switch (args[0]) {
         case "set":
         case "count":
