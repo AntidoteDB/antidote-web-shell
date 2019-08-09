@@ -1,6 +1,8 @@
-.PHONY: all run start-server start-docker stop-docker
+.PHONY: all run start-server start-docker stop-docker build clean
 
-all:
+all: build
+
+build:
 	npm install
 
 run: start-docker start-server 
@@ -17,3 +19,5 @@ start-docker:
 stop-docker:
 	docker-compose -f docker/docker-antidote-3dcs.yml down
 
+clean: stop-docker
+	npm run clean
